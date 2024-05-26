@@ -12,4 +12,10 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: c586c2c839dd82f4d8efc0f0da3e1e06, type: 3}
   m_Name: Settings
   m_EditorClassIdentifier: 
-  test: String test field
+  tile: {fileID: 3503920621846825690, guid: 4cbadd125905f7644a964a35ae92e5fb, type: 3}
+  panelTileColor: {r: 0.9056604, g: 0.9056604, b: 0.9056604, a: 0.23529412}
+  countTileX: 12
+  countTileY: 18
+  offset: 3.01
+  width: 512
+  height: 512
