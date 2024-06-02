@@ -1,19 +1,76 @@
 using UnityEngine;
 using tetris;
+using tetris.Figures;
 
 [RequireComponent(typeof(SpriteRenderer))]
 public class Panel : MonoBehaviour
 {
+    protected bool isLeftMove = false;
+    protected bool isRightMove = false;
+
+    protected bool isLeftPressed = false;
+    protected bool isRightPressed = false;
+    
+    private Figure figure;
+    
     void Start()
     {
         setPanelSize();
         drawTiles();
+        figure = new Line(getStartCoords());
     }
 
-    // Update is called once per frame
-    void Update()
+    public void Update()
     {
+        if (Input.GetButtonDown("Jump"))
+        {
+            figure.rotate();
+        }
         
+        if (Input.GetButtonDown("Horizontal"))
+        {
+            if (Input.GetAxis("Horizontal") > 0)
+            {
+                figure.moveRight();
+                isRightPressed = true;
+            }
+        
+            if (Input.GetAxis("Horizontal") < 0)
+            {
+                figure.moveLeft();
+                isLeftPressed = true;
+            }
+        }
+        else if (Input.GetButtonUp("Horizontal"))
+        {
+            isRightPressed = false;
+            isLeftPressed = false;
+        }
+        
+        isRightMove = false;
+        isLeftMove = false;
+        
+        if (isRightPressed && Input.GetButton("Fire3"))
+        {
+            isRightMove = true;
+        }
+        
+        if (isLeftPressed && Input.GetButton("Fire3"))
+        {
+            isLeftMove = true;
+        }
+    }
+    
+    public void FixedUpdate()
+    {
+        if (isRightMove)
+        {
+            figure.moveRight();
+        }
+        else if (isLeftMove)
+        {
+            figure.moveLeft();
+        }
     }
 
     protected void setPanelSize()
@@ -27,9 +84,8 @@ public class Panel : MonoBehaviour
         int countX = Settings.instance.getCountTileX();
         int countY = Settings.instance.getCountTileY();
         float offset = Settings.instance.getOffset();
-        
-        float startX = transform.position.x - transform.localScale.x / 2 + offset;
-        float startY = transform.position.y - transform.localScale.y / 2 + offset;
+
+        Vector2 startCoords = getStartCoords();
         
         for (int y = 0; y < countY; ++y)
         {
@@ -37,12 +93,22 @@ public class Panel : MonoBehaviour
             {
                 SpriteRenderer tile = Settings.instance.getTile();
                 
-                float _x = startX + tile.size.x / 2 + x * (tile.size.x + offset);
-                float _y = startY + tile.size.y / 2 + y * (tile.size.y + offset);
+                float _x = startCoords.x + tile.size.x / 2 + x * (tile.size.x + offset);
+                float _y = startCoords.y + tile.size.y / 2 + y * (tile.size.y + offset);
                 
                 tile.transform.position = new Vector3(_x, _y, 1);
                 tile.color = Settings.instance.getPanelTileColor();
             }
         }
+    }
+
+    protected Vector2 getStartCoords()
+    {
+        float offset = Settings.instance.getOffset();
+        
+        return new Vector2(
+            transform.position.x - transform.localScale.x / 2 + offset,
+            transform.position.y - transform.localScale.y / 2 + offset
+        );
     }
 }
