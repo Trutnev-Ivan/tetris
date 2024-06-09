@@ -13,9 +13,9 @@ MonoBehaviour:
   m_Name: Settings
   m_EditorClassIdentifier: 
   tile: {fileID: 3503920621846825690, guid: 4cbadd125905f7644a964a35ae92e5fb, type: 3}
-  panelTileColor: {r: 0.9056604, g: 0.9056604, b: 0.9056604, a: 0.23529412}
-  countTileX: 12
-  countTileY: 18
-  offset: 3.01
+  panelTileColor: {r: 0.5660378, g: 0.5660378, b: 0.5660378, a: 1}
+  countTileX: 15
+  countTileY: 22
+  offset: 3
   width: 512
   height: 512

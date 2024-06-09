@@ -17,7 +17,7 @@ public class Panel : MonoBehaviour
     {
         setPanelSize();
         drawTiles();
-        figure = new Line(getStartCoords());
+        figure = new Square(getStartCoords());
     }
 
     public void Update()
@@ -83,7 +83,6 @@ public class Panel : MonoBehaviour
     {
         int countX = Settings.instance.getCountTileX();
         int countY = Settings.instance.getCountTileY();
-        float offset = Settings.instance.getOffset();
 
         Vector2 startCoords = getStartCoords();
         
@@ -91,13 +90,8 @@ public class Panel : MonoBehaviour
         {
             for (int x = 0; x < countX; ++x)
             {
-                SpriteRenderer tile = Settings.instance.getTile();
-                
-                float _x = startCoords.x + tile.size.x / 2 + x * (tile.size.x + offset);
-                float _y = startCoords.y + tile.size.y / 2 + y * (tile.size.y + offset);
-                
-                tile.transform.position = new Vector3(_x, _y, 1);
-                tile.color = Settings.instance.getPanelTileColor();
+                Tile tile = new Tile(x, y, startCoords);
+                tile.setColor(Settings.instance.getPanelTileColor());
             }
         }
     }
