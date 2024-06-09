@@ -1,3 +1,4 @@
+using tetris.Figures.Enum;
 using UnityEngine;
 
 namespace tetris.Figures
@@ -23,17 +24,20 @@ namespace tetris.Figures
 
         protected override void rotateFigure()
         {
-            if (maxX == minX)
+            switch (rotateState)
             {
-                rotateToHorisontal();
-            }
-            else
-            {
-                rotateToVertical();
+                case RotateState.TOP:
+                case RotateState.BOTTOM:
+                    rotateToHorizontal();
+                    break;
+                case RotateState.LEFT:
+                case RotateState.RIGHT:
+                    rotateToVertical();
+                    break;
             }
         }
 
-        protected void rotateToHorisontal()
+        protected void rotateToHorizontal()
         {
             int startX = maxX - COUNT_TILES + 1;
                 

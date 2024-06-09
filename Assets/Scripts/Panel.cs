@@ -17,7 +17,7 @@ public class Panel : MonoBehaviour
     {
         setPanelSize();
         drawTiles();
-        figure = new TFigure(getStartCoords());
+        figure = new SFigure(getStartCoords());
     }
 
     public void Update()
