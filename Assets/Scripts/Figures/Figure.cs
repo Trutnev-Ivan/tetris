@@ -1,5 +1,5 @@
-using System;
 using UnityEngine;
+using tetris.Figures.Enum;
 
 namespace tetris.Figures
 {
@@ -12,6 +12,7 @@ namespace tetris.Figures
         protected int minX = Settings.instance.getCountTileX() - 1;
         protected int maxY = 0;
         protected int minY = Settings.instance.getCountTileY() - 1;
+        protected RotateState rotateState = RotateState.BOTTOM;
         
         public Figure(Vector2 startCoords)
         {
@@ -26,6 +27,8 @@ namespace tetris.Figures
 
         public void rotate()
         {
+            rotateState = rotateState.next();
+            
             rotateFigure();
             calcMinMaxCoords();
         }
