@@ -1,8 +1,7 @@
 using UnityEditor;
 using UnityEngine;
 
-[CreateAssetMenu(fileName = "Settings", menuName = "ScriptableObjects/Settings", order = 1)]
-public class Settings : ScriptableSingleton<Settings>
+public class Settings : MonoBehaviour
 {
     [SerializeField] private SpriteRenderer tile;
     [SerializeField] private Color panelTileColor; // Цвет тайла в панели
@@ -12,6 +11,21 @@ public class Settings : ScriptableSingleton<Settings>
     [SerializeField] [Range(1, 3000)] private int width;
     [SerializeField] [Range(1, 3000)] private int height;
 
+    private static Settings _instance;
+
+    public static Settings instance
+    {
+        get
+        {
+            if (!_instance)
+            {
+                _instance = GameObject.FindObjectOfType<Settings>();
+            }
+
+            return _instance;
+        }
+    }
+    
     public float getWidth()
     {
         return countTileX * getTileSize().x + (countTileX + 1) * offset;
