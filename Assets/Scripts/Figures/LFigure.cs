@@ -1,4 +1,5 @@
 using System;
+using DefaultNamespace;
 using tetris.Figures.Enum;
 using UnityEngine;
 
@@ -15,7 +16,7 @@ namespace tetris.Figures
         {
             int centerX = Settings.instance.getCountTileX() / 2;
             int maxY = Settings.instance.getCountTileY() - 1;
-            Color color = Color.green;
+            Color color = ColorFabric.getRandomColor();
 
             tiles[0] = new Tile(centerX, maxY, startCoords);
             tiles[1] = new Tile(centerX, maxY - 1, startCoords);

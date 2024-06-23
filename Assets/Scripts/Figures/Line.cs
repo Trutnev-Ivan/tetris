@@ -1,3 +1,4 @@
+using DefaultNamespace;
 using tetris.Figures.Enum;
 using UnityEngine;
 
@@ -12,13 +13,15 @@ namespace tetris.Figures
 
         protected override void initTiles()
         {
+            Color color = ColorFabric.getRandomColor();
+            
             for (int i = 0; i < COUNT_TILES; ++i)
             {
                 tiles[i] = new Tile(
                     Settings.instance.getCountTileX() / 2, 
                     Settings.instance.getCountTileY() - i - 1, 
                     startCoords);
-                tiles[i].setColor(Color.green);
+                tiles[i].setColor(color);
             }
         }
 

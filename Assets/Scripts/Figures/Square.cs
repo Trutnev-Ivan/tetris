@@ -1,3 +1,4 @@
+using DefaultNamespace;
 using UnityEngine;
 
 namespace tetris.Figures
@@ -13,7 +14,7 @@ namespace tetris.Figures
         {
             int startX = Settings.instance.getCountTileX() / 2;
             int startY = Settings.instance.getCountTileY() - 1;
-            Color color = Color.green;
+            Color color = ColorFabric.getRandomColor();
             
             tiles[0] = new Tile(
                 startX,

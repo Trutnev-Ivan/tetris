@@ -78,5 +78,11 @@ namespace tetris.Figures
                 }
             }
         }
+
+        public void delete()
+        {
+            GameObject.Destroy(tile);
+            tile = null;
+        }
     }
 }

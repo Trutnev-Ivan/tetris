@@ -1,10 +1,14 @@
+using System.Collections;
 using UnityEngine;
 using tetris.Figures.Enum;
+using UnityEngine.Events;
 
 namespace tetris.Figures
 {
     public class Figure
     {
+        public static UnityEvent finishedMoveBottom = new UnityEvent();
+        
         public const int COUNT_TILES = 4;
         protected Tile[] tiles = new Tile[COUNT_TILES];
         protected Vector2 startCoords;
@@ -94,6 +98,28 @@ namespace tetris.Figures
                 ++minX;
                 ++maxX;
             }
+        }
+
+        public void moveBottom()
+        {
+            if (minY <= 0)
+            {
+                finishedMoveBottom.Invoke();
+                return;
+            }
+            
+            for (int i = 0; i < COUNT_TILES; ++i)
+            {
+                tiles[i].setPosition(tiles[i].Row, tiles[i].Col-1);
+            }
+
+            --minY;
+            --maxY;
+        }
+        
+        public IEnumerator GetEnumerator()
+        {
+            return tiles.GetEnumerator();
         }
     }
 }

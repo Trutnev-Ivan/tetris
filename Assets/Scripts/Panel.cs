@@ -1,6 +1,8 @@
+using System.Collections;
+using DefaultNamespace;
 using UnityEngine;
-using tetris;
 using tetris.Figures;
+using UnityEngine.Events;
 
 [RequireComponent(typeof(SpriteRenderer))]
 public class Panel : MonoBehaviour
@@ -13,13 +15,41 @@ public class Panel : MonoBehaviour
     
     private Figure figure;
     
+    
     void Start()
     {
         setPanelSize();
         drawTiles();
-        figure = new ZFigure(getStartCoords());
+        figure = FigureFabric.instanceFigure(getStartCoords());
+        
+        Figure.finishedMoveBottom.AddListener(new UnityAction(finishedCallback));
+
+        StartCoroutine(moveBottomFigure());
     }
 
+    private void finishedCallback()
+    {
+        foreach (Tile tile in figure)
+        {
+            TileFields.addTile(tile);
+        }
+        
+        figure = FigureFabric.instanceFigure(getStartCoords());
+    }
+    
+    IEnumerator moveBottomFigure()
+    {
+        for (;;)
+        {
+            if (figure is not null)
+            {
+                figure.moveBottom();   
+            }
+            
+            yield return new WaitForSeconds(0.2f);
+        }
+    } 
+    
     public void Update()
     {
         if (Input.GetButtonDown("Jump"))
@@ -96,7 +126,7 @@ public class Panel : MonoBehaviour
         }
     }
 
-    protected Vector2 getStartCoords()
+    public Vector2 getStartCoords()
     {
         float offset = Settings.instance.getOffset();
         
