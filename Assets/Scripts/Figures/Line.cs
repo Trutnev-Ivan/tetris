@@ -25,6 +25,51 @@ namespace tetris.Figures
             }
         }
 
+        protected override bool canRotate()
+        {
+            switch (rotateState)
+            {
+                case RotateState.TOP:
+                case RotateState.BOTTOM:
+                    return canRotateToHorizontal();
+                case RotateState.LEFT:
+                case RotateState.RIGHT:
+                    return canRotateToVertical();
+            }
+
+            return base.canRotate();
+        }
+
+        protected bool canRotateToHorizontal()
+        {
+            int startX = getStartXToHorizontalRotation();
+
+            for (int i = 0; i < COUNT_TILES; ++i)
+            {
+                if (TileFields.hasTile(startX + i, maxY))
+                {
+                    return false;
+                }
+            }
+
+            return true;
+        }
+
+        protected bool canRotateToVertical()
+        {
+            int startY = getStartYToVerticalRotation();
+                
+            for (int i = 0; i < COUNT_TILES; ++i)
+            {
+                if (TileFields.hasTile(maxX, startY + i))
+                {
+                    return false;
+                }
+            }
+
+            return true;
+        }
+        
         protected override void rotateFigure()
         {
             switch (rotateState)
@@ -40,7 +85,7 @@ namespace tetris.Figures
             }
         }
 
-        protected void rotateToHorizontal()
+        private int getStartXToHorizontalRotation()
         {
             int startX = maxX - COUNT_TILES + 1;
                 
@@ -53,13 +98,20 @@ namespace tetris.Figures
                 startX = Settings.instance.getCountTileX() - COUNT_TILES;
             }
 
+            return startX;
+        }
+        
+        protected void rotateToHorizontal()
+        {
+            int startX = getStartXToHorizontalRotation();
+
             for (int i = 0; i < COUNT_TILES; ++i)
             {
                 tiles[i].setPosition(startX + i, maxY);
-            }            
+            }
         }
 
-        protected void rotateToVertical()
+        private int getStartYToVerticalRotation()
         {
             int startY = maxY - COUNT_TILES + 1;
 
@@ -71,6 +123,13 @@ namespace tetris.Figures
             {
                 startY = Settings.instance.getCountTileY() - COUNT_TILES;
             }
+
+            return startY;
+        }
+        
+        protected void rotateToVertical()
+        {
+            int startY = getStartYToVerticalRotation();
                 
             for (int i = 0; i < COUNT_TILES; ++i)
             {

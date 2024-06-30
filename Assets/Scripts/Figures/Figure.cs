@@ -1,4 +1,5 @@
 using System.Collections;
+using DefaultNamespace;
 using UnityEngine;
 using tetris.Figures.Enum;
 using UnityEngine.Events;
@@ -31,12 +32,20 @@ namespace tetris.Figures
 
         public void rotate()
         {
-            rotateState = rotateState.next();
+            if (canRotate())
+            {
+                rotateState = rotateState.next();
             
-            rotateFigure();
-            calcMinMaxCoords();
+                rotateFigure();
+                calcMinMaxCoords();
+            }
         }
 
+        protected virtual bool canRotate()
+        {
+            return true;
+        }
+        
         protected virtual void rotateFigure()
         {
         }
@@ -72,9 +81,29 @@ namespace tetris.Figures
             }
         }
 
+        protected virtual bool canMoveLeft()
+        {
+            bool canMove = minX > 0;
+
+            if (!canMove)
+            {
+                return false;
+            }
+            
+            foreach (Tile tile in tiles)
+            {
+                if (TileFields.hasTile(tile.Row - 1, tile.Col))
+                {
+                    return false;
+                }
+            }
+
+            return true;
+        } 
+        
         public void moveLeft()
         {
-            if (minX > 0)
+            if (canMoveLeft())
             {
                 for (int i = 0; i < COUNT_TILES; ++i)
                 {
@@ -86,9 +115,29 @@ namespace tetris.Figures
             }
         }
 
+        protected virtual bool canMoveRight()
+        {
+            bool canMove = maxX < Settings.instance.getCountTileX() - 1;
+
+            if (!canMove)
+            {
+                return false;
+            }
+
+            foreach (Tile tile in tiles)
+            {
+                if (TileFields.hasTile(tile.Row + 1, tile.Col))
+                {
+                    return false;
+                }
+            }
+            
+            return true;
+        }
+        
         public void moveRight()
         {
-            if (maxX < Settings.instance.getCountTileX() - 1)
+            if (canMoveRight())
             {
                 for (int i = 0; i < COUNT_TILES; ++i)
                 {
@@ -100,9 +149,29 @@ namespace tetris.Figures
             }
         }
 
+        protected virtual bool canMoveBottom()
+        {
+            bool canMove = minY > 0;
+
+            if (!canMove)
+            {
+                return false;
+            }
+            
+            foreach (Tile tile in tiles)
+            {
+                if (TileFields.hasTile(tile.Row, tile.Col-1))
+                {
+                    return false;
+                }
+            }
+
+            return true;
+        }
+        
         public void moveBottom()
         {
-            if (minY <= 0)
+            if (!canMoveBottom())
             {
                 finishedMoveBottom.Invoke();
                 return;

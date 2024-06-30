@@ -29,26 +29,64 @@ namespace tetris.Figures
             tiles[3].setColor(color);
         }
         
+        protected override bool canRotate()
+        {
+            switch (rotateState)
+            {
+                case RotateState.TOP:
+                    return canRotateToTiles(getTilesTopRotate());
+                case RotateState.BOTTOM:
+                    return canRotateToTiles(getTilesBottomRotate());
+                case RotateState.LEFT:
+                    return canRotateToTiles(getTilesLeftRotate());
+                case RotateState.RIGHT:
+                    return canRotateToTiles(getTilesRightRotate());
+            }
+
+            return base.canRotate();
+        }
+        
         protected override void rotateFigure()
         {
             switch (rotateState)
             {
                 case RotateState.TOP:
-                    rotateToTop();
+                    setNewRotatedTiles(getTilesTopRotate());
                     break;
                 case RotateState.BOTTOM:
-                    rotateToBottom();
+                    setNewRotatedTiles(getTilesBottomRotate());
                     break;
                 case RotateState.LEFT:
-                    rotateToLeft();
+                    setNewRotatedTiles(getTilesLeftRotate());
                     break;
                 case RotateState.RIGHT:
-                    rotateToRight();
+                    setNewRotatedTiles(getTilesRightRotate());
                     break;
             }
         }
 
-        protected void rotateToTop()
+        protected void setNewRotatedTiles(Vector2Int[] vectors)
+        {
+            for (int i = 0; i < vectors.Length; ++i)
+            {
+                tiles[i].setPosition(vectors[i].x, vectors[i].y);                
+            }
+        }
+
+        protected bool canRotateToTiles(Vector2Int[] vectors)
+        {
+            foreach (Vector2Int vector in vectors)
+            {
+                if (TileFields.hasTile(vector.x, vector.y))
+                {
+                    return false;
+                }
+            }
+            
+            return true;
+        }
+
+        protected Vector2Int[] getTilesTopRotate()
         {
             int _maxY = maxY;
 
@@ -57,13 +95,15 @@ namespace tetris.Figures
                 _maxY = Settings.instance.getCountTileY() - 3;
             }
             
-            tiles[0].setPosition(minX, _maxY);
-            tiles[1].setPosition(minX + 1, _maxY);
-            tiles[2].setPosition(minX + 1, _maxY - 1);
-            tiles[3].setPosition(minX + 1, _maxY - 2);
+            return new Vector2Int[]{
+                new Vector2Int(minX, _maxY),
+                new Vector2Int(minX + 1, _maxY),
+                new Vector2Int(minX + 1, _maxY - 1),
+                new Vector2Int(minX + 1, _maxY - 2)
+            };
         }
 
-        protected void rotateToBottom()
+        protected Vector2Int[] getTilesBottomRotate()
         {
             int _maxY = maxY;
             
@@ -72,13 +112,15 @@ namespace tetris.Figures
                 _maxY = Settings.instance.getCountTileY() - 3;
             }
             
-            tiles[0].setPosition(minX, _maxY);
-            tiles[1].setPosition(minX, _maxY - 1);
-            tiles[2].setPosition(minX, _maxY - 2);
-            tiles[3].setPosition(minX + 1, _maxY - 2);
+            return new Vector2Int[]{
+                new Vector2Int(minX, _maxY),
+                new Vector2Int(minX, _maxY - 1),
+                new Vector2Int(minX, _maxY - 2),
+                new Vector2Int(minX + 1, _maxY - 2)
+            };
         }
 
-        protected void rotateToLeft()
+        protected Vector2Int[] getTilesLeftRotate()
         {
             int _minX = minX;
             
@@ -87,13 +129,15 @@ namespace tetris.Figures
                 _minX = Settings.instance.getCountTileX() - 3;
             }
             
-            tiles[0].setPosition(_minX, maxY);
-            tiles[1].setPosition(_minX + 1, maxY);
-            tiles[2].setPosition(_minX + 2, maxY);
-            tiles[3].setPosition(_minX, maxY - 1);
+            return new Vector2Int[]{
+                new Vector2Int(_minX, maxY),
+                new Vector2Int(_minX + 1, maxY),
+                new Vector2Int(_minX + 2, maxY),
+                new Vector2Int(_minX, maxY - 1)
+            };
         }
 
-        protected void rotateToRight()
+        protected Vector2Int[] getTilesRightRotate()
         {
             int _minX = minX;
 
@@ -102,10 +146,12 @@ namespace tetris.Figures
                 _minX = Settings.instance.getCountTileX() - 3;
             }
             
-            tiles[0].setPosition(_minX, maxY - 1);
-            tiles[1].setPosition(_minX + 1, maxY - 1);
-            tiles[2].setPosition(_minX + 2, maxY - 1);
-            tiles[3].setPosition(_minX + 2, maxY);
+            return new Vector2Int[]{
+                new Vector2Int(_minX, maxY - 1),
+                new Vector2Int(_minX + 1, maxY - 1),
+                new Vector2Int(_minX + 2, maxY - 1),
+                new Vector2Int(_minX + 2, maxY)
+            };
         }
     }
 }
