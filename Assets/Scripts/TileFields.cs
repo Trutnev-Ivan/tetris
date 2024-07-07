@@ -1,4 +1,5 @@
 using tetris.Figures;
+using UnityEngine;
 
 namespace DefaultNamespace
 {
@@ -20,6 +21,13 @@ namespace DefaultNamespace
         public static void addTile(Tile tile)
         {
             tiles[tile.Row, tile.Col] = tile;
+        }
+
+        public static void moveTile(Vector2Int oldCoords, Vector2Int newCoords)
+        {
+            tiles[oldCoords.x, oldCoords.y].setPosition(newCoords.x, newCoords.y);
+            tiles[newCoords.x, newCoords.y] = tiles[oldCoords.x, oldCoords.y];
+            tiles[oldCoords.x, oldCoords.y] = null;
         }
     }
 }

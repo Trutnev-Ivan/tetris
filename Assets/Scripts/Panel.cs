@@ -31,6 +31,7 @@ public class Panel : MonoBehaviour
     private void finishedCallback()
     {
         HashSet<int> checkColsToFill = new HashSet<int>();
+        HashSet<int> colsUpperMoveToBottom = new HashSet<int>();
 
         foreach (Tile tile in figure)
         {
@@ -55,10 +56,27 @@ public class Panel : MonoBehaviour
 
             if (needDeleteRow)
             {
+                colsUpperMoveToBottom.Add(col);
+
                 for (int row = 0; row < Settings.instance.getCountTileX(); ++row)
                 {
                     TileFields.deleteTile(row, col);
                 }   
+            }
+        }
+
+        // Перемещаем строки вниз
+        foreach (int col in colsUpperMoveToBottom)
+        {
+            for (int colUpper = col + 1; colUpper < Settings.instance.getCountTileY(); ++colUpper)
+            {
+                for (int row = 0; row < Settings.instance.getCountTileX(); ++row)
+                {
+                    if (TileFields.hasTile(row, colUpper))
+                    {
+                        TileFields.moveTile(new Vector2Int(row, colUpper), new Vector2Int(row, colUpper - 1));
+                    }
+                }
             }
         }
 
