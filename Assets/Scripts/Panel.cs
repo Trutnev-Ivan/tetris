@@ -3,6 +3,7 @@ using DefaultNamespace;
 using UnityEngine;
 using tetris.Figures;
 using UnityEngine.Events;
+using System.Collections.Generic;
 
 [RequireComponent(typeof(SpriteRenderer))]
 public class Panel : MonoBehaviour
@@ -29,11 +30,38 @@ public class Panel : MonoBehaviour
 
     private void finishedCallback()
     {
+        HashSet<int> checkColsToFill = new HashSet<int>();
+
         foreach (Tile tile in figure)
         {
             TileFields.addTile(tile);
+            checkColsToFill.Add(tile.Col);
         }
         
+        // TODO: в отдельный метод (или класс)
+        foreach (int col in checkColsToFill)
+        {
+            bool needDeleteRow = true;
+
+            for (int row = 0; row < Settings.instance.getCountTileX(); ++row)
+            {
+                needDeleteRow &= TileFields.hasTile(row, col);
+
+                if (!needDeleteRow)
+                {
+                    break;
+                }
+            }
+
+            if (needDeleteRow)
+            {
+                for (int row = 0; row < Settings.instance.getCountTileX(); ++row)
+                {
+                    TileFields.deleteTile(row, col);
+                }   
+            }
+        }
+
         figure = FigureFabric.instanceFigure(getStartCoords());
     }
     
