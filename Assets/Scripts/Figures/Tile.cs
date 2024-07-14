@@ -6,8 +6,8 @@ namespace tetris.Figures
     {
         private SpriteRenderer tile;
         private Vector2 startCoords;
-        private int col;
-        private int row;
+        private int x;
+        private int y;
 
         public Tile(int row, int col, Vector2 startCoords)
         {
@@ -28,53 +28,53 @@ namespace tetris.Figures
             tile.color = color;
         }
         
-        public void setPosition(int row, int col)
+        public void setPosition(int x, int y)
         {
-            Row = row;
-            Col = col;
+            X = x;
+            Y = y;
             calcPosition();
         }
         
         protected void calcPosition()
         {
             float offset = Settings.instance.getOffset();
-            float x = startCoords.x + tile.size.x / 2 + Row * (tile.size.x + offset);
-            float y = startCoords.y + tile.size.y / 2 + Col * (tile.size.y + offset);
+            float x = startCoords.x + tile.size.x / 2 + X * (tile.size.x + offset);
+            float y = startCoords.y + tile.size.y / 2 + Y * (tile.size.y + offset);
             tile.transform.position = new Vector3(x, y, 1);
         }
 
-        public int Col
+        public int Y
         {
-            get => col;
+            get => y;
             set
             {
-                col = value;
+                y = value;
                 
                 if (value > Settings.instance.getCountTileY() - 1)
                 {
-                    col = Settings.instance.getCountTileY() - 1;
+                    y = Settings.instance.getCountTileY() - 1;
                 }
                 else if (value < 0)
                 {
-                    col = 0;
+                    y = 0;
                 }
             }
         }
 
-        public int Row
+        public int X
         {
-            get => row;
+            get => x;
             set
             {
-                row = value;
+                x = value;
 
                 if (value > Settings.instance.getCountTileX() - 1)
                 {
-                    row = Settings.instance.getCountTileX() - 1;
+                    x = Settings.instance.getCountTileX() - 1;
                 }
                 else if (value < 0)
                 {
-                    row = 0;
+                    x = 0;
                 }
             }
         }

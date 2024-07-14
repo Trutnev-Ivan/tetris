@@ -7,20 +7,20 @@ namespace tetris
     {
         protected static Tile[,] tiles = new Tile[Settings.instance.getCountTileX(), Settings.instance.getCountTileY()];
 
-        public static bool hasTile(int row, int col)
+        public static bool hasTile(int x, int y)
         {
-            return tiles[row, col] != null;
+            return tiles[x, y] != null;
         }
 
-        public static void deleteTile(int row, int col)
+        public static void deleteTile(int x, int y)
         {
-            tiles[row, col].delete();
-            tiles[row, col] = null;
+            tiles[x, y].delete();
+            tiles[x, y] = null;
         }
 
         public static void addTile(Tile tile)
         {
-            tiles[tile.Row, tile.Col] = tile;
+            tiles[tile.X, tile.Y] = tile;
         }
 
         public static void moveTile(Vector2Int oldCoords, Vector2Int newCoords)
@@ -36,7 +36,7 @@ namespace tetris
 
             foreach (Tile tile in figure)
             {
-                isIntersected |= hasTile(tile.Row, tile.Col);
+                isIntersected |= hasTile(tile.X, tile.Y);
             }
 
             return isIntersected;
@@ -52,6 +52,20 @@ namespace tetris
                     {
                         tiles[i,j].delete();
                         tiles[i,j] = null;
+                    }
+                }
+            }
+        }
+
+        public static void moveBottomHigherThan(int col)
+        {
+            for (int colUpper = col + 1; colUpper < Settings.instance.getCountTileY(); ++colUpper)
+            {
+                for (int row = 0; row < Settings.instance.getCountTileX(); ++row)
+                {
+                    if (hasTile(row, colUpper))
+                    {
+                        moveTile(new Vector2Int(row, colUpper), new Vector2Int(row, colUpper - 1));
                     }
                 }
             }

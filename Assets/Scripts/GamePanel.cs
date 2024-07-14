@@ -1,173 +1,44 @@
-using System.Collections;
 using UnityEngine;
 using tetris.Figures;
 using tetris;
-using System.Collections.Generic;
-using tetris.Events;
 
 [RequireComponent(typeof(SpriteRenderer))]
 public class GamePanel : MonoBehaviour
 {
-    protected bool isLeftMove = false;
-    protected bool isRightMove = false;
-    protected bool isLeftPressed = false;
-    protected bool isRightPressed = false;
-    private Figure figure;
-    IEnumerator moveBottomCoroutine;
-    
+    FigureActionManager figureActionManager;
+
     void Start()
     {
-        moveBottomCoroutine = moveBottomFigure();
-
         setPanelSize();
         drawTiles();
+        
+        figureActionManager = new FigureActionManager(getStartCoords());
         startGame();
 
         RestartGameEvent.Instance.AddListener(TileFields.clean);
         RestartGameEvent.Instance.AddListener(startGame);
+        FinishedGameEvent.Instance.AddListener(finishGame);
+    }
+
+    protected void finishGame()
+    {
+        StopCoroutine(figureActionManager.getMoveBottomCoroutine());
     }
 
     protected void startGame()
     {
-        figure = FigureFabric.instanceFigure(getStartCoords());
-        StartCoroutine(moveBottomCoroutine);
-        FinishedMoveBottomEvent.Instance.AddListener(finishedCallback);
+        figureActionManager.instanceFigure();
+        StartCoroutine(figureActionManager.getMoveBottomCoroutine());
     }
 
-    private void finishedCallback()
-    {
-        HashSet<int> checkColsToFill = new HashSet<int>();
-        HashSet<int> colsUpperMoveToBottom = new HashSet<int>();
-
-        foreach (Tile tile in figure)
-        {
-            TileFields.addTile(tile);
-            checkColsToFill.Add(tile.Col);
-        }
-        
-        // TODO: в отдельный метод (или класс)
-        foreach (int col in checkColsToFill)
-        {
-            bool needDeleteRow = true;
-
-            for (int row = 0; row < Settings.instance.getCountTileX(); ++row)
-            {
-                needDeleteRow &= TileFields.hasTile(row, col);
-
-                if (!needDeleteRow)
-                {
-                    break;
-                }
-            }
-
-            if (needDeleteRow)
-            {
-                colsUpperMoveToBottom.Add(col);
-
-                for (int row = 0; row < Settings.instance.getCountTileX(); ++row)
-                {
-                    TileFields.deleteTile(row, col);
-                }   
-            }
-        }
-
-        if (colsUpperMoveToBottom.Count > 0)
-        {
-            ChangedScoreEvent.Instance.Invoke(colsUpperMoveToBottom.Count);
-        }
-
-        // Перемещаем строки вниз
-        foreach (int col in colsUpperMoveToBottom)
-        {
-            for (int colUpper = col + 1; colUpper < Settings.instance.getCountTileY(); ++colUpper)
-            {
-                for (int row = 0; row < Settings.instance.getCountTileX(); ++row)
-                {
-                    if (TileFields.hasTile(row, colUpper))
-                    {
-                        TileFields.moveTile(new Vector2Int(row, colUpper), new Vector2Int(row, colUpper - 1));
-                    }
-                }
-            }
-        }
-
-        figure = FigureFabric.instanceFigure(getStartCoords());
-
-        if (TileFields.hasFigureIntersection(figure))
-        {
-            FinishedGameEvent.Instance.Invoke();
-
-            StopCoroutine(moveBottomCoroutine);
-            FinishedMoveBottomEvent.Instance.RemoveListener(finishedCallback);
-            figure.delete();
-            figure = null;
-        }
-    }
-    
-    IEnumerator moveBottomFigure()
-    {
-        for (;;)
-        {
-            if (figure is not null)
-            {
-                figure.moveBottom();   
-            }
-            
-            yield return new WaitForSeconds(0.2f);
-        }
-    } 
-    
     public void Update()
     {
-        if (Input.GetButtonDown("Jump"))
-        {
-            figure.rotate();
-        }
-        
-        if (Input.GetButtonDown("Horizontal"))
-        {
-            if (Input.GetAxis("Horizontal") > 0)
-            {
-                figure.moveRight();
-                isRightPressed = true;
-            }
-        
-            if (Input.GetAxis("Horizontal") < 0)
-            {
-                figure.moveLeft();
-                isLeftPressed = true;
-            }
-        }
-        else if (Input.GetButtonUp("Horizontal"))
-        {
-            isRightPressed = false;
-            isLeftPressed = false;
-        }
-        
-        isRightMove = false;
-        isLeftMove = false;
-        
-        if (isRightPressed && Input.GetKey(KeyCode.LeftShift))
-        {
-            isRightMove = true;
-        }
-
-        if (isLeftPressed && Input.GetKey(KeyCode.LeftShift))
-        {
-            isLeftMove = true;
-        }
+        figureActionManager.update();
     }
     
     public void FixedUpdate()
     {
-        if (isRightMove)
-        {
-            figure.moveRight();
-        }
-        else if (isLeftMove)
-        {
-            figure.moveLeft();
-        }
+        figureActionManager.FixedUpdate();
     }
 
     protected void setPanelSize()

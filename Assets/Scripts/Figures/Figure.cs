@@ -56,24 +56,24 @@ namespace tetris.Figures
             
             foreach (Tile tile in tiles)
             {
-                if (tile.Row > maxX)
+                if (tile.X > maxX)
                 {
-                    maxX = tile.Row;
+                    maxX = tile.X;
                 }
                 
-                if (tile.Row < minX)
+                if (tile.X < minX)
                 {
-                    minX = tile.Row;
+                    minX = tile.X;
                 }
 
-                if (tile.Col > maxY)
+                if (tile.Y > maxY)
                 {
-                    maxY = tile.Col;
+                    maxY = tile.Y;
                 }
                 
-                if (tile.Col < minY)
+                if (tile.Y < minY)
                 {
-                    minY = tile.Col;
+                    minY = tile.Y;
                 }
             }
         }
@@ -89,7 +89,7 @@ namespace tetris.Figures
             
             foreach (Tile tile in tiles)
             {
-                if (TileFields.hasTile(tile.Row - 1, tile.Col))
+                if (TileFields.hasTile(tile.X - 1, tile.Y))
                 {
                     return false;
                 }
@@ -104,7 +104,7 @@ namespace tetris.Figures
             {
                 for (int i = 0; i < COUNT_TILES; ++i)
                 {
-                    tiles[i].setPosition(tiles[i].Row - 1, tiles[i].Col);
+                    tiles[i].setPosition(tiles[i].X - 1, tiles[i].Y);
                 }
 
                 --minX;
@@ -123,7 +123,7 @@ namespace tetris.Figures
 
             foreach (Tile tile in tiles)
             {
-                if (TileFields.hasTile(tile.Row + 1, tile.Col))
+                if (TileFields.hasTile(tile.X + 1, tile.Y))
                 {
                     return false;
                 }
@@ -138,7 +138,7 @@ namespace tetris.Figures
             {
                 for (int i = 0; i < COUNT_TILES; ++i)
                 {
-                    tiles[i].setPosition(tiles[i].Row + 1, tiles[i].Col);
+                    tiles[i].setPosition(tiles[i].X + 1, tiles[i].Y);
                 }
 
                 ++minX;
@@ -157,7 +157,7 @@ namespace tetris.Figures
             
             foreach (Tile tile in tiles)
             {
-                if (TileFields.hasTile(tile.Row, tile.Col-1))
+                if (TileFields.hasTile(tile.X, tile.Y - 1))
                 {
                     return false;
                 }
@@ -176,7 +176,7 @@ namespace tetris.Figures
             
             for (int i = 0; i < COUNT_TILES; ++i)
             {
-                tiles[i].setPosition(tiles[i].Row, tiles[i].Col-1);
+                tiles[i].setPosition(tiles[i].X, tiles[i].Y - 1);
             }
 
             --minY;
