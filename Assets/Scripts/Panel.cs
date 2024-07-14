@@ -1,7 +1,7 @@
 using System.Collections;
-using DefaultNamespace;
 using UnityEngine;
 using tetris.Figures;
+using tetris;
 using UnityEngine.Events;
 using System.Collections.Generic;
 
@@ -10,20 +10,19 @@ public class Panel : MonoBehaviour
 {
     protected bool isLeftMove = false;
     protected bool isRightMove = false;
-
     protected bool isLeftPressed = false;
     protected bool isRightPressed = false;
-    
     private Figure figure;
-    
+    private UnityAction finishedMoveBottomAction;
     
     void Start()
     {
         setPanelSize();
         drawTiles();
         figure = FigureFabric.instanceFigure(getStartCoords());
+        finishedMoveBottomAction = new UnityAction(finishedCallback);
         
-        Figure.finishedMoveBottom.AddListener(new UnityAction(finishedCallback));
+        Figure.finishedMoveBottom.AddListener(finishedMoveBottomAction);
 
         StartCoroutine(moveBottomFigure());
     }
@@ -81,6 +80,14 @@ public class Panel : MonoBehaviour
         }
 
         figure = FigureFabric.instanceFigure(getStartCoords());
+
+        if (TileFields.hasFigureIntersection(figure))
+        {
+            Debug.Log("Intersected");
+            StopCoroutine(moveBottomFigure());
+            Figure.finishedMoveBottom.RemoveListener(finishedMoveBottomAction);
+            figure.delete();
+        }
     }
     
     IEnumerator moveBottomFigure()
@@ -126,12 +133,12 @@ public class Panel : MonoBehaviour
         isRightMove = false;
         isLeftMove = false;
         
-        if (isRightPressed && Input.GetButton("Fire3"))
+        if (isRightPressed && Input.GetKey(KeyCode.LeftShift))
         {
             isRightMove = true;
         }
-        
-        if (isLeftPressed && Input.GetButton("Fire3"))
+
+        if (isLeftPressed && Input.GetKey(KeyCode.LeftShift))
         {
             isLeftMove = true;
         }

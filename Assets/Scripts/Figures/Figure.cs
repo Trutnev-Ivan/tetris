@@ -190,5 +190,13 @@ namespace tetris.Figures
         {
             return tiles.GetEnumerator();
         }
+
+        public void delete()
+        {
+            foreach (Tile tile in this)
+            {
+                tile.delete();
+            }
+        }
     }
 }
