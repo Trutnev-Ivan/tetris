@@ -11,6 +11,7 @@ public class FigureActionManager
     protected bool isRightMove = false;
     protected bool isLeftPressed = false;
     protected bool isRightPressed = false;
+    protected bool isDownArrowPressed = false;
     private Figure figure;
     Vector2 startCoords;
     IEnumerator moveBottomCoroutine;
@@ -39,8 +40,13 @@ public class FigureActionManager
                 figure.moveBottom();   
             }
             
-            yield return new WaitForSeconds(0.2f);
+            yield return new WaitForSeconds(isDownArrowPressed ? getFastBottomTime() : 0.2f);
         }
+    }
+
+    protected float getFastBottomTime()
+    {
+        return 0.02f;
     }
 
     protected void finishedMove()
@@ -155,6 +161,8 @@ public class FigureActionManager
         {
             isLeftMove = true;
         }
+
+        isDownArrowPressed = Input.GetKey(KeyCode.DownArrow);
     }
 
     public void FixedUpdate()
