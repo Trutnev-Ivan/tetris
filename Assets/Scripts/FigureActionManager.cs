@@ -15,10 +15,18 @@ public class FigureActionManager
     private Figure figure;
     Vector2 startCoords;
     IEnumerator moveBottomCoroutine;
+    const float MIN_BOTTOM_TIME = 0.01f;
+    const float FAST_BOTTOM_TIME = 0.05f;
+    const float BOTTOM_TIME_STEP = 0.01f;
+    const float START_BOTTOM_TIME = 0.2f;
+    float bottomTime = START_BOTTOM_TIME;
 
     public FigureActionManager(Vector2 startCoords)
     {
         this.startCoords = startCoords;
+        ChangedScoreEvent.Instance.AddListener(score => {
+            changeBottomTime();
+            });
     }
 
     public IEnumerator getMoveBottomCoroutine()
@@ -40,13 +48,28 @@ public class FigureActionManager
                 figure.moveBottom();   
             }
             
-            yield return new WaitForSeconds(isDownArrowPressed ? getFastBottomTime() : 0.2f);
+            float time = getBottomTime();
+
+            if (isDownArrowPressed && time > FAST_BOTTOM_TIME)
+            {
+                time = FAST_BOTTOM_TIME;
+            }
+
+            yield return new WaitForSeconds(time);
         }
     }
 
-    protected float getFastBottomTime()
+    protected float getBottomTime()
     {
-        return 0.02f;
+        return bottomTime;
+    }
+
+    protected void changeBottomTime()
+    {
+        if (bottomTime > MIN_BOTTOM_TIME)
+        {
+            bottomTime -= BOTTOM_TIME_STEP;
+        }
     }
 
     protected void finishedMove()
@@ -81,6 +104,8 @@ public class FigureActionManager
             FinishedMoveBottomEvent.Instance.RemoveListener(finishedMove);
             figure.delete();
             figure = null;
+
+            bottomTime = START_BOTTOM_TIME;
         }
     }
 
