@@ -1,14 +1,12 @@
 using System.Collections;
 using UnityEngine;
 using tetris.Figures.Enum;
-using UnityEngine.Events;
+using tetris.Events;
 
 namespace tetris.Figures
 {
     public class Figure
-    {
-        public static UnityEvent finishedMoveBottom = new UnityEvent();
-        
+    {        
         public const int COUNT_TILES = 4;
         protected Tile[] tiles = new Tile[COUNT_TILES];
         protected Vector2 startCoords;
@@ -172,7 +170,7 @@ namespace tetris.Figures
         {
             if (!canMoveBottom())
             {
-                finishedMoveBottom.Invoke();
+                FinishedMoveBottom.Instance.Invoke();
                 return;
             }
             

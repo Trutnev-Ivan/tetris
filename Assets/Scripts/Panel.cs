@@ -2,8 +2,8 @@ using System.Collections;
 using UnityEngine;
 using tetris.Figures;
 using tetris;
-using UnityEngine.Events;
 using System.Collections.Generic;
+using tetris.Events;
 
 [RequireComponent(typeof(SpriteRenderer))]
 public class Panel : MonoBehaviour
@@ -13,16 +13,14 @@ public class Panel : MonoBehaviour
     protected bool isLeftPressed = false;
     protected bool isRightPressed = false;
     private Figure figure;
-    private UnityAction finishedMoveBottomAction;
     
     void Start()
     {
         setPanelSize();
         drawTiles();
         figure = FigureFabric.instanceFigure(getStartCoords());
-        finishedMoveBottomAction = new UnityAction(finishedCallback);
         
-        Figure.finishedMoveBottom.AddListener(finishedMoveBottomAction);
+        FinishedMoveBottom.Instance.AddListener(finishedCallback);
 
         StartCoroutine(moveBottomFigure());
     }
@@ -66,7 +64,7 @@ public class Panel : MonoBehaviour
 
         if (colsUpperMoveToBottom.Count > 0)
         {
-            ScoreText.changedScoreEvent.Invoke(colsUpperMoveToBottom.Count);
+            ChangedScoreEvent.Instance.Invoke(colsUpperMoveToBottom.Count);
         }
 
         // Перемещаем строки вниз
@@ -90,7 +88,7 @@ public class Panel : MonoBehaviour
         {
             Debug.Log("Intersected");
             StopCoroutine(moveBottomFigure());
-            Figure.finishedMoveBottom.RemoveListener(finishedMoveBottomAction);
+            FinishedMoveBottom.Instance.RemoveListener(finishedCallback);
             figure.delete();
         }
     }

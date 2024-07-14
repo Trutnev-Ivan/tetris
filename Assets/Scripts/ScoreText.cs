@@ -5,16 +5,11 @@ using tetris.Events;
 [RequireComponent(typeof(TextMeshProUGUI))]
 public class ScoreText : MonoBehaviour
 {
-    public static ChangedScoreEvent changedScoreEvent;
     protected int score = 0;
 
     void Start()
     {
-        if (changedScoreEvent == null){
-            changedScoreEvent = new ChangedScoreEvent();
-        }
-
-        changedScoreEvent.AddListener(drawScore);
+        ChangedScoreEvent.Instance.AddListener(drawScore);
         drawScore(score);
     }
 
