@@ -64,6 +64,11 @@ public class Panel : MonoBehaviour
             }
         }
 
+        if (colsUpperMoveToBottom.Count > 0)
+        {
+            ScoreText.changedScoreEvent.Invoke(colsUpperMoveToBottom.Count);
+        }
+
         // Перемещаем строки вниз
         foreach (int col in colsUpperMoveToBottom)
         {
