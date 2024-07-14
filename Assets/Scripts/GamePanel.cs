@@ -6,23 +6,32 @@ using System.Collections.Generic;
 using tetris.Events;
 
 [RequireComponent(typeof(SpriteRenderer))]
-public class Panel : MonoBehaviour
+public class GamePanel : MonoBehaviour
 {
     protected bool isLeftMove = false;
     protected bool isRightMove = false;
     protected bool isLeftPressed = false;
     protected bool isRightPressed = false;
     private Figure figure;
+    IEnumerator moveBottomCoroutine;
     
     void Start()
     {
+        moveBottomCoroutine = moveBottomFigure();
+
         setPanelSize();
         drawTiles();
-        figure = FigureFabric.instanceFigure(getStartCoords());
-        
-        FinishedMoveBottom.Instance.AddListener(finishedCallback);
+        startGame();
 
-        StartCoroutine(moveBottomFigure());
+        RestartGameEvent.Instance.AddListener(TileFields.clean);
+        RestartGameEvent.Instance.AddListener(startGame);
+    }
+
+    protected void startGame()
+    {
+        figure = FigureFabric.instanceFigure(getStartCoords());
+        StartCoroutine(moveBottomCoroutine);
+        FinishedMoveBottomEvent.Instance.AddListener(finishedCallback);
     }
 
     private void finishedCallback()
@@ -86,10 +95,12 @@ public class Panel : MonoBehaviour
 
         if (TileFields.hasFigureIntersection(figure))
         {
-            Debug.Log("Intersected");
-            StopCoroutine(moveBottomFigure());
-            FinishedMoveBottom.Instance.RemoveListener(finishedCallback);
+            FinishedGameEvent.Instance.Invoke();
+
+            StopCoroutine(moveBottomCoroutine);
+            FinishedMoveBottomEvent.Instance.RemoveListener(finishedCallback);
             figure.delete();
+            figure = null;
         }
     }
     

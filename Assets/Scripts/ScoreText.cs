@@ -9,13 +9,21 @@ public class ScoreText : MonoBehaviour
 
     void Start()
     {
+        restart();
+
         ChangedScoreEvent.Instance.AddListener(drawScore);
-        drawScore(score);
+        RestartGameEvent.Instance.AddListener(restart);
     }
 
     protected void drawScore(int score)
     {
         this.score += score;
         GetComponent<TextMeshProUGUI>().text = "Score: " + this.score;
+    }
+
+    protected void restart()
+    {
+        score = 0;
+        drawScore(score);
     }
 }

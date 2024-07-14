@@ -41,5 +41,20 @@ namespace tetris
 
             return isIntersected;
         }
+
+        public static void clean()
+        {
+            for (int i = 0; i < Settings.instance.getCountTileX(); ++i)
+            {
+                for (int j = 0; j < Settings.instance.getCountTileY(); ++j)
+                {
+                    if (tiles[i,j] != null)
+                    {
+                        tiles[i,j].delete();
+                        tiles[i,j] = null;
+                    }
+                }
+            }
+        }
     }
 }

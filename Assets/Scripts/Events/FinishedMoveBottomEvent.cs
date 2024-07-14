@@ -1,15 +1,15 @@
 using UnityEngine.Events;
 
 namespace tetris.Events{
-    class FinishedMoveBottom: UnityEvent
+    class FinishedMoveBottomEvent: UnityEvent
     {
-        private static FinishedMoveBottom finishedMoveBottom;
+        private static FinishedMoveBottomEvent finishedMoveBottom;
 
-        public static FinishedMoveBottom Instance
+        public static FinishedMoveBottomEvent Instance
         {
             get {
                 if (finishedMoveBottom == null){
-                    finishedMoveBottom = new FinishedMoveBottom();
+                    finishedMoveBottom = new FinishedMoveBottomEvent();
                 }
 
                 return finishedMoveBottom; 

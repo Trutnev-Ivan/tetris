@@ -170,7 +170,7 @@ namespace tetris.Figures
         {
             if (!canMoveBottom())
             {
-                FinishedMoveBottom.Instance.Invoke();
+                FinishedMoveBottomEvent.Instance.Invoke();
                 return;
             }
             
